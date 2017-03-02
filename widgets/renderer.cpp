@@ -705,8 +705,8 @@ void ViewportOrtho::renderViewport(const RenderOptions &options) {
 
     const auto nears = state->scale.x * state->viewerState->depthCutOff;
     const auto fars = -state->scale.x * state->viewerState->depthCutOff;
-    const auto nearVal = -nears;
-    const auto farVal = -fars;
+    const auto nearVal = /*0;*/-nears;
+    const auto farVal = -fars/* * 1000*/;
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(-displayedIsoPx, +displayedIsoPx, -displayedIsoPx, +displayedIsoPx, nearVal, farVal);// gluLookAt relies on an unaltered cartesian Projection
@@ -814,6 +814,9 @@ void ViewportOrtho::renderViewport(const RenderOptions &options) {
             glVertex3f(bottom.x(), bottom.y(), bottom.z());
         glEnd();
         glPopMatrix();
+    }
+    if (options.drawMesh && !state->skeletonState->trees.empty() && state->skeletonState->trees.front().mesh) {
+        state->mainWindow->viewport3D->renderMesh();
     }
     if (Session::singleton().annotationMode.testFlag(AnnotationMode::Brush)) {
         glPushMatrix();

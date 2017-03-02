@@ -307,7 +307,6 @@ class Viewport3D : public ViewportBase {
     int wiggle{0};
     QTimer wiggletimer;
     void renderVolumeVP();
-    void renderMesh();
     void renderMeshBuffer(Mesh & buf);
     void renderMeshBufferIds(Mesh & buf);
     void pickMeshIdAtPosition();
@@ -326,6 +325,7 @@ class Viewport3D : public ViewportBase {
     virtual void handleKeyRelease(const QKeyEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
 public:
+    void renderMesh();
     double zoomFactor{1.0};
     boost::optional<BufferSelection> meshLastClickInformation;
     bool meshLastClickCurrentlyVisited{false};

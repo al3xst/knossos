@@ -559,6 +559,13 @@ void ViewportBase::initializeGL() {
                         + 0.25 * fcolor * sub_light_power  // diffuse(sub)
                         )
                         , tree_color.a);
+
+            float dot_value = dot(frag_normal, normalize((modelview_matrix * vec4(0.0, 0.0, 1.0, 0.0)).xyz));
+            if (dot_value < 0.0) {
+                gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5); // display normals
+            } else {
+                gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0); // display normals
+            }
         }
     )shaderSource");
     meshTreeColorShader.link();
