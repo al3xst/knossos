@@ -232,12 +232,18 @@ void TaskManagementWidget::submitFinal() {
     }
 }
 
+bool dontfuckingusewhenthetaskmanagementwantstoupload{false};
+
 bool TaskManagementWidget::submit(const bool final) {
     state->viewer->window->save();//save file to submit
 
     const auto url = taskLoginWidget.host + api + "/submit/";
     setCursor(Qt::BusyCursor);
+    setEnabled(false);// prevent repeated clicks on submit because the progress dialog cannot be
+    dontfuckingusewhenthetaskmanagementwantstoupload = true;
     auto res = Network::singleton().submitHeidelbrain(url, Session::singleton().annotationFilename, submitCommentEdit.text(), final);
+    dontfuckingusewhenthetaskmanagementwantstoupload = false;
+    setEnabled(true);
     setCursor(Qt::ArrowCursor);
 
     if (handleError(res, "Task successfully submitted!")) {

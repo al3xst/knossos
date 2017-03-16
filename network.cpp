@@ -109,6 +109,8 @@ std::pair<int, int> Network::checkOnlineMags(const QUrl & url) {
     return {lowestAvailableMag, highestAvailableMag};
 }
 
+extern bool dontfuckingusewhenthetaskmanagementwantstoupload;
+
 QPair<bool, QByteArray> blockDownloadExtractData(QNetworkReply & reply) {
     QEventLoop pause;
     QObject::connect(&reply, &QNetworkReply::finished, [&pause]() {
@@ -116,7 +118,8 @@ QPair<bool, QByteArray> blockDownloadExtractData(QNetworkReply & reply) {
     });
 
     QProgressDialog progress("Network Operation…", "Abort", 0, 100, state->mainWindow);
-    progress.setModal(true);
+
+    progress.setModal(!dontfuckingusewhenthetaskmanagementwantstoupload);// freezes uploads, disable task management instead for now
     QObject::connect(&progress, &QProgressDialog::canceled, &reply, &QNetworkReply::abort);
     auto processProgress = [&progress](qint64 bytesReceived, qint64 bytesTotal){
         progress.setRange(0, bytesTotal);
