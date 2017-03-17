@@ -1,55 +1,49 @@
 env:
   global:
-    - TRAVIS_TAG=nightly
-
+  - TRAVIS_TAG=nightly
 language: cpp
-
 matrix:
   include:
-    - os: linux
-      dist: trusty
-      sudo: required
-      compiler: gcc
-      services: docker
-    - os: osx
-      osx_image: xcode7.3
+  - os: linux
+    dist: trusty
+    sudo: required
+    compiler: gcc
+    services: docker
+  - os: osx
+    osx_image: xcode7.3
 git:
   submodules: false
-
 before_install:
-  #LINUX
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export RELEASE_PKG_FILE=linux64.KNOSSOS.nightly.AppImage; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir artifact; fi
-  #OSX
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install qt5 snappy quazip ninja; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export CXXFLAGS="-I/usr/local/opt/qt5/include"; fi #qt5.8.0 is keg-only
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then OSXQT=`ls /usr/local/Cellar/qt5/`; fi #find current version (dir) of installed qt
-  
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then export RELEASE_PKG_FILE=linux64.KNOSSOS.nightly.AppImage;
+  fi
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir artifact; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install qt5 snappy quazip ninja; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then export CXXFLAGS="-I/usr/local/opt/qt5/include";
+  fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then OSXQT=`ls /usr/local/Cellar/qt5/`; fi
 before_script:
-  #OSX
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget https://github.com/al3xst/PythonQt/releases/download/nightly-mac/pythonqt.tar.gz; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then tar -xvf pythonqt.tar.gz; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir knossos_build && cd knossos_build; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then cmake -G Ninja -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_PREFIX_PATH="/Users/travis/build/knossos-project/knossos/pythonqt/lib/cmake/;/usr/local/Cellar/qt5/${OSXQT}/lib/cmake/;/usr/local/opt/qt5/lib/" ..; fi
-
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget https://github.com/al3xst/PythonQt/releases/download/nightly-mac/pythonqt.tar.gz;
+  fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then tar -xvf pythonqt.tar.gz; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir knossos_build && cd knossos_build;
+  fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then cmake -G Ninja -DCMAKE_BUILD_TYPE=RELEASE
+  -DCMAKE_PREFIX_PATH="/Users/travis/build/knossos-project/knossos/pythonqt/lib/cmake/;/usr/local/Cellar/qt5/${OSXQT}/lib/cmake/;/usr/local/opt/qt5/lib/"
+  ..; fi
 script:
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ninja -j1; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mv knossos.app KNOSSOS.app; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/local/Cellar/qt5/${OSXQT}/bin/macdeployqt KNOSSOS.app; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then docker run -it --privileged --cap-add=ALL -v /lib/modules:/lib/modules -v /dev:/dev -v ${PWD}/artifact:/root/artifact knossosal3xst/knossos-project-arch /bin/bash -c 'cd /root/; ./build_and_pack.sh'; fi
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then cp artifact/${RELEASE_PKG_FILE} .; fi
-  
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then ninja -j1; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then mv knossos.app KNOSSOS.app; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then /usr/local/Cellar/qt5/${OSXQT}/bin/macdeployqt
+  KNOSSOS.app; fi
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then docker run -it --privileged --cap-add=ALL
+  -v /lib/modules:/lib/modules -v /dev:/dev -v ${PWD}/artifact:/root/artifact knossosal3xst/knossos-project-arch
+  /bin/bash -c 'cd /root/; ./build_and_pack.sh'; fi
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then cp artifact/${RELEASE_PKG_FILE} .; fi
 deploy:
   provider: releases
   api_key:
-    secure: 35guXMCYs1UKXHNia+0aLITTDdCtXjclYYANUbHxyUQaIlkPf9F0HUdKM3ng0TvvFIMn9MPybKmL60QLMnzBXRjlAszKvpPWtffU0MYlXKYrgdw5SejqIFCNHE4Fm1iDEdo3Brx8WihmyzysKVeuytAxh0Z+GJ5ZiFq2TQO3xoiRd8MM0nwcdvnvgWEZnFjVibLJpeEr1zcglsHVCCSQuYeCoJdWFNeeNx49u++HMk5fYWa+ZHcmIiAMJagU0VavGeJyOw4YVI5MhFdNvszd6egZUGPr0QOMUJQiLn2AKqfLtB3oSQkk2L1m6j0ndvMFqEVY5pgBUWrP7h0rg+iIvhcnEQrD9oHZw2aYet+v3EVVzTfWmlCt81XSb+MXU7iiZFhhTczjIqcaRUVJMrIe9/qs4t3gFLKwilsx8KtOwrzVqnbyIlPuAZcbIMZM8DkMVOkrbfnWsIDR3D9Shn9oi5OFUXhOpTiSM0iY3dpCn+86DIlecU/aA6MBHVKCzFZzjXaXYnhwo0U0/xBs9ynfXjdRMPEZDZOAgLRvZIoOSDtCJPThNllMTK3isLALzSvd7aqX/MFvCYM/UdcSjrudlYrt7ArNN0TcnFZOd9PpWNieCRS+U/+lTMg2jEn0Sy1ln6GZDTqrXcoz3i9Q44rNC4WJKiQf7p/maoOzzEjBVzo=
-  file_glob: true
-  file: ${RELEASE_PKG_FILE}
-    
-  skip_cleanup: true
-  overwrite: true
+    secure: Y/1YWINkdnepHwdAUsfNUnWL4DI+WzGvx0XGQbxqBIR8QjWHUshEA9L9ZelXqHxLsbBbCEmFio4f4p++tKHNHkWeYRxb8w23wfQteakPVhbYZCA1Zxk7JSXcYCwgKVLSvDpQS3gG/IEkBIGNoD5CEPq5RPAZyUYrYtecHE2Obdi/wJZBDUDFmGIZGU9I8WPvZZYXvjQZI78vFxA9Z58U3V9OAKNYI/HGFM5lw4mdQXLs/QWT62Ni92kHJmtECOWsFzmMFFM9ZDyJA4TuVCxF/WsYgHvw7WRN/9e0tcYQWhQJknn0WSMGT+iTQE+AJYacwcdyTJchv91Is3iPbXmNGvLsapcJZO9jjTExxBAoeT2OB+EHMXxbHUbm/lLJCXv0gfWNpIxSS/CQvPzTBzD595k8I/J0fT2gzyO+Itw6j1JTBNdHmgWtv+Bq59CPCBd9c0SLcguHO71/FS0F3dcj7GkEBFSRIsUD9uSqor7f6bYwC9b3aPS2pC5HDAt+QG5FlDxY+o8YCbv9g6nK0960BM9+PV2CUVMqYfPxeoXBgheVA7u3jJKBEJZYrHzuBbaRDr7CVRc4cqZLeKLa6zLO3jdq3Aoz2MV3849R7QT2sZo5Sk/VeW0XkUnNx0VOjGEXItVo1y//hP1gPXskZVzewqqqsx3iTeak8iY037KdP/w=
+  file: "${RELEASE_PKG_FILE}"
   on:
     repo: al3xst/knossos
-    all_branches: true
-  
