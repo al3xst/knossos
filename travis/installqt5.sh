@@ -16,7 +16,7 @@ wget -c $DOWNLOAD_URL
 hdiutil mount ${INSTALLER}
 ls /Volumes
 echo Installing Qt
-extract-qt-installer $APPFILE $PWD/Qt
+./travis/extract-qt-installer $APPFILE $PWD/Qt
 
 echo Create $ENVFILE
 cat << EOF > $ENVFILE
