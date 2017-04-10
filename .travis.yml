@@ -19,7 +19,7 @@ git:
 before_install:
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export RELEASE_PKG_FILE=linux64.KNOSSOS.nightly.AppImage; fi
   - if [ "$TRAVIS_OS_NAME" == "linux" ]; then mkdir artifact; fi
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then /travis/installqt5.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ls travis; ./travis/installqt5.sh; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew install snappy quazip ninja; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export CXXFLAGS="-I/usr/local/opt/qt5/include"; fi
