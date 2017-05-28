@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo `git branch | grep \* | cut -d ' ' -f2`
+
 pacman -Syu --noconfirm
 pacman --sync --noconfirm mingw-w64-x86_64-toolchain # msys64-only
 pacman -S mingw-w64-x86_64-boost --noconfirm
