@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo `git branch`
+echo `git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'`
 
 pacman -Syu --noconfirm
 pacman --sync --noconfirm mingw-w64-x86_64-toolchain # msys64-only
