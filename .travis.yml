@@ -34,7 +34,7 @@ before_script:
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then wget https://github.com/al3xst/PythonQt/releases/download/nightly-mac/pythonqt.tar.gz; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then tar -xvf pythonqt.tar.gz; fi
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then mkdir knossos_build && cd knossos_build; fi
-- if [ "$TRAVIS_OS_NAME" == "osx" ]; then cmake -G Ninja -DCMAKE_BUILD_TYPE=RELEASE -DQt5_DIR="/Users/travis/build/al3xst/knossos/Qt/5.8/clang_64/lib/cmake/Qt5" -DCMAKE_PREFIX_PATH="/Users/travis/build/knossos-project/knossos/pythonqt/lib/cmake/;/usr/local/Cellar/qt5/${OSXQT}/lib/cmake/;/usr/local/opt/qt5/lib/" ..; fi
+- if [ "$TRAVIS_OS_NAME" == "osx" ]; then cmake -G Ninja -DCMAKE_BUILD_TYPE=RELEASE -DQt5_DIR="/Users/travis/build/al3xst/knossos/Qt/5.8/clang_64/lib/cmake/Qt5" -DCMAKE_PREFIX_PATH="/Users/travis/build/al3xst/knossos/pythonqt/lib/cmake/;/usr/local/Cellar/qt5/${OSXQT}/lib/cmake/;/usr/local/opt/qt5/lib/" ..; fi
 
 script:
 - if [ "$TRAVIS_OS_NAME" == "osx" ]; then ninja -j1; fi
