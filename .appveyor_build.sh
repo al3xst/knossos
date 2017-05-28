@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo `git branch`
+echo $APPVEYOR_REPO_BRANCH
 
 pacman -Syu --noconfirm
 pacman --sync --noconfirm mingw-w64-x86_64-toolchain # msys64-only
