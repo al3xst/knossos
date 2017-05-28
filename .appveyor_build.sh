@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo `git rev-parse --abbrev-ref HEAD`
+echo `git branch`
 
 pacman -Syu --noconfirm
 pacman --sync --noconfirm mingw-w64-x86_64-toolchain # msys64-only
