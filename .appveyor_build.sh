@@ -1,6 +1,11 @@
 #!/bin/bash
 
-echo $APPVEYOR_REPO_BRANCH
+if [ $APPVEYOR_REPO_BRANCH=="master" ]
+then
+  echo "yay"
+else
+  echo "no"
+fi
 
 pacman -Syu --noconfirm
 pacman --sync --noconfirm mingw-w64-x86_64-toolchain # msys64-only
