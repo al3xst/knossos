@@ -23,6 +23,7 @@ before_install:
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export PATH=$PATH:$DIR/travis; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then chmod +x travis/installqt5.sh; ./travis/installqt5.sh; fi
+  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then chmod +x travis/buildqt5fromsrc.sh; ./travis/buildqt5fromsrc.sh; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then export PATH=$PWD/Qt/5.8/clang_64/bin:$PATH; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then echo $PATH; fi
   - if [ "$TRAVIS_OS_NAME" == "osx" ]; then brew update; fi
